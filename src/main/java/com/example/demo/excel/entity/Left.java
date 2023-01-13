@@ -14,11 +14,15 @@ public class Left {
     @Excel(name="序号")
     private Integer index;
 
+    @Excel(name="月份")
+    private String yf;
+
     /**
      * 部门
      */
     @Excel(name="部门")
     private String bm;
+
 
     /**
      * 项目名称 系统导入
@@ -36,7 +40,7 @@ public class Left {
     /**
      * 项目年度
      */
-    @Excel(name="项目年度",fixedIndex = 4)
+    @Excel(name="项目年度")
     private Integer xmnd;
 
     /**
@@ -93,7 +97,6 @@ public class Left {
     @Excel(name="下月工作计划")
     private String xygzjh;
 
-    private String yf;
 
     @ExcelCollection(name="外协采购计划进度")
     private List<Right> rights;

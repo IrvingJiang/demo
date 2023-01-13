@@ -5,16 +5,13 @@ import cn.afterturn.easypoi.excel.entity.TemplateExportParams;
 import com.alibaba.fastjson.JSON;
 import com.example.demo.excel.ExcelExportContext;
 import com.example.demo.excel.ExcelImportContext;
-import com.example.demo.excel.ImportHandler;
 import com.example.demo.excel.entity.Left;
 import com.example.demo.excel.kit.ExcelKit;
 import com.google.common.collect.Maps;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,19 +34,7 @@ public class ExcelController {
 
     @PostMapping("/import")
     public List<Left> excelImport(MultipartFile multipartFile) throws Exception {
-        //如果要获取月份
-        String value = ExcelKit.getCellValue(multipartFile, 1, 4);
-        String month = null;
-        if (StringUtils.isNotEmpty(value)) {
-            month = value.replaceAll("月份：","");
-        }
-        List<Left> leftList = ExcelKit.importExcel(initExcelImportContext(multipartFile), Left.class);
-        //填充月份
-        if (!CollectionUtils.isEmpty(leftList)) {
-            String finalMonth = month;
-            leftList.forEach(e -> e.setYf(finalMonth));
-        }
-        return leftList;
+       return ExcelKit.importExcel(initExcelImportContext(multipartFile), Left.class);
     }
 
 
@@ -78,7 +63,6 @@ public class ExcelController {
         //设置需要额外填充的数据
         Map ext = Maps.newHashMap();
         ext.put("title", "这是标题");
-        ext.put("month", "这是月份");
         excelExportContext.setExtData(ext);
 
         //设置定制化处理逻辑
@@ -106,7 +90,6 @@ public class ExcelController {
         importParams.setHeadRows(3);
         //设置读取的sheet
         importParams.setSheetNum(1);
-        importParams.setDataHandler(new ImportHandler());
         excelImportContext.setImportParams(importParams);
         excelImportContext.setFile(multipartFile);
         return excelImportContext;
@@ -124,6 +107,7 @@ public class ExcelController {
         return "[\n" +
                 "    {\n" +
                 "        \"index\": 1,\n" +
+                "        \"yf\": \"2023年一月\",\n" +
                 "        \"bm\": \"无敌\",\n" +
                 "        \"xmmc\": \"地方\",\n" +
                 "        \"xmfzr\": \"的地方是\",\n" +
@@ -186,6 +170,7 @@ public class ExcelController {
                 "    },\n" +
                 "    {\n" +
                 "        \"index\": 2,\n" +
+                "        \"yf\": \"2023年二月\",\n" +
                 "        \"bm\": \"地方\",\n" +
                 "        \"xmmc\": \"十分士大夫\",\n" +
                 "        \"xmfzr\": \"士大夫\",\n" +
